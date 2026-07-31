@@ -51,7 +51,7 @@ should show up in `/mcp`.
 ## POC checklist
 
 - [x] Build a simple MCP server (Python) with 1 Tool (`get_weather`, queries a real external API) and 1 Resource (`notes://study`).
-- [ ] Connect it to Claude Desktop or Claude Code.
+- [x] Connect it to Claude Desktop or Claude Code.
 
 ## Status
 
