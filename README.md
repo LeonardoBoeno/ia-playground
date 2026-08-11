@@ -1,6 +1,6 @@
-# AI Learning Roadmap: MCP, RAG & Local LLMs
+# AI Learning Roadmap: MCP, RAG, Agents & Local LLMs
 
-> A sequential, hands-on study path to understand modern AI systems — from LLM fundamentals to Model Context Protocol (MCP), Retrieval-Augmented Generation (RAG), and running your own models locally.
+> A sequential, hands-on study path to understand modern AI systems — from LLM fundamentals to MCP, RAG, multi-agent orchestration, evaluation, and running your own models locally.
 
 ![Status](https://img.shields.io/badge/status-in%20progress-yellow)
 ![License](https://img.shields.io/badge/license-MIT-blue)
@@ -9,16 +9,20 @@
 
 This repo tracks my personal learning path through core AI engineering topics. Each phase includes curated readings, videos, reference repos, and a hands-on POC to validate the concept before moving on.
 
-**Estimated time:** 6–8 weeks (part-time)
+**Estimated time:** 9–12 weeks (part-time)
 
 ## Table of Contents
 
 - [Phase 0 — AI/LLM Fundamentals](#phase-0--aillm-fundamentals)
 - [Phase 1 — APIs & Prompt Engineering](#phase-1--apis--prompt-engineering)
-- [Phase 2 — MCP (Model Context Protocol)](#phase-2--mcp-model-context-protocol)
-- [Phase 3 — RAG (Retrieval-Augmented Generation)](#phase-3--rag-retrieval-augmented-generation)
-- [Phase 4 — Running Models Locally](#phase-4--running-models-locally)
-- [Phase 5 — Capstone Project](#phase-5--capstone-project)
+- [Phase 2 — AI Gateways & AWS Bedrock](#phase-2--ai-gateways--aws-bedrock)
+- [Phase 3 — MCP (Model Context Protocol)](#phase-3--mcp-model-context-protocol)
+- [Phase 4 — Claude Skills, Commands & Rules](#phase-4--claude-skills-commands--rules)
+- [Phase 5 — RAG (Retrieval-Augmented Generation)](#phase-5--rag-retrieval-augmented-generation)
+- [Phase 6 — Running Models Locally](#phase-6--running-models-locally)
+- [Phase 7 — Multi-Agent Systems](#phase-7--multi-agent-systems)
+- [Phase 8 — Agent Evaluation & Benchmarks](#phase-8--agent-evaluation--benchmarks)
+- [Phase 9 — Capstone Project](#phase-9--capstone-project)
 - [Priority Order (Short on Time)](#priority-order-short-on-time)
 
 ---
@@ -46,32 +50,68 @@ This repo tracks my personal learning path through core AI engineering topics. E
 *(3–5 days)*
 
 **Reading**
-- [ ] [Anthropic — Prompt Engineering Overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview)
-- [ ] [Anthropic — Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
+- [X] [Anthropic — Prompt Engineering Overview](https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [X] [Anthropic — Building Effective Agents](https://www.anthropic.com/research/building-effective-agents)
 
 **POC**
 - [ ] Script calling the Anthropic (or OpenAI) API with basic tool use / function calling — e.g., a small "agent" that queries a weather API.
 
 ---
 
-## Phase 2 — MCP (Model Context Protocol)
-*(1 week)*
+## Phase 2 — AI Gateways & AWS Bedrock
+*(3–5 days)*
+
+Gateways sit between your app and one or more model providers: unified API, routing, fallback, caching, cost tracking, and observability across providers (cloud and local).
 
 **Reading**
-- [ ] [Official announcement](https://www.anthropic.com/news/model-context-protocol)
-- [ ] [Official docs](https://modelcontextprotocol.io) — host/client/server architecture, Tools/Resources/Prompts
-
-**Repos**
-- [ ] [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — reference MCP servers (filesystem, git, etc.)
-- [ ] [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk) (or `typescript-sdk`, depending on your stack)
+- [ ] [LiteLLM](https://github.com/BerriAI/litellm) — open-source, self-hosted gateway with an OpenAI-compatible API across 100+ providers (the standard starting point)
+- [ ] [Portkey](https://portkey.ai) — managed alternative with built-in guardrails/observability, no ops overhead
+- [ ] [AWS Bedrock — Claude models](https://aws.amazon.com/bedrock/anthropic/) — Amazon's managed platform for foundation models (Claude, Llama, Mistral, Titan) inside the AWS security boundary
+- [ ] [Anthropic docs — Claude on Amazon Bedrock](https://platform.claude.com/docs/en/build-with-claude/claude-in-amazon-bedrock)
+- [ ] [Claude Code — Amazon Bedrock setup](https://code.claude.com/docs/en/amazon-bedrock) — relevant since Claude Code can run directly against Bedrock
 
 **POC**
-- [ ] Build a simple MCP server (Python or TS) with 1 Tool (e.g., query an internal API) and 1 Resource.
-- [ ] Connect it to Claude Desktop or Claude Code.
+- [ ] Stand up a local LiteLLM proxy routing requests between the Anthropic API and a local Ollama model behind a single OpenAI-compatible endpoint.
+- [ ] Run `/setup-bedrock` in Claude Code to authenticate against AWS Bedrock and compare behavior/latency with the direct API.
 
 ---
 
-## Phase 3 — RAG (Retrieval-Augmented Generation)
+## Phase 3 — MCP (Model Context Protocol)
+*(1 week)*
+
+**Reading**
+- [X] [Official announcement](https://www.anthropic.com/news/model-context-protocol)
+- [X] [Official docs](https://modelcontextprotocol.io) — host/client/server architecture, Tools/Resources/Prompts
+
+**Repos**
+- [X] [modelcontextprotocol/servers](https://github.com/modelcontextprotocol/servers) — reference MCP servers (filesystem, git, etc.)
+- [X] [modelcontextprotocol/python-sdk](https://github.com/modelcontextprotocol/python-sdk) (or `typescript-sdk`, depending on your stack)
+
+**POC**
+- [X] Build a simple MCP server (Python or TS) with 1 Tool (e.g., query an internal API) and 1 Resource.
+- [X] Connect it to Claude Desktop or Claude Code.
+
+---
+
+## Phase 4 — Claude Skills, Commands & Rules
+*(3–5 days)*
+
+Builds directly on the custom subagents you already run in Claude Code (`~/.claude/agents/`) — Skills, Commands, and Rules are the other three ways to shape how Claude Code behaves per-project.
+
+**Reading**
+- [ ] [Skills](https://code.claude.com/docs/en/skills) — reusable, on-demand instruction packages Claude loads only when relevant
+- [ ] [Slash Commands](https://code.claude.com/docs/en/commands) — reusable prompt templates invoked with `/name`
+- [ ] [Memory & Rules (CLAUDE.md, `.claude/rules/`)](https://code.claude.com/docs/en/memory) — persistent, path-scoped project instructions
+- [ ] [Sub-agents](https://code.claude.com/docs/en/sub-agents) — for reference against what you've already configured
+
+**POC**
+- [ ] Create a custom Skill for a repetitive task in one of your projects (e.g., a code-review checklist or a report-generation format).
+- [ ] Write a custom slash command (e.g., `/test-report` or `/deploy-check`).
+- [ ] Add path-scoped rules under `.claude/rules/` for a multi-package repo.
+
+---
+
+## Phase 5 — RAG (Retrieval-Augmented Generation)
 *(1–2 weeks)*
 
 **Reading**
@@ -87,7 +127,7 @@ This repo tracks my personal learning path through core AI engineering topics. E
 
 ---
 
-## Phase 4 — Running Models Locally
+## Phase 6 — Running Models Locally
 *(1 week)*
 
 **Tools (easiest to most control)**
@@ -100,24 +140,58 @@ This repo tracks my personal learning path through core AI engineering topics. E
 
 **POC**
 - [ ] `ollama pull llama3.2` + `ollama run llama3.2` → test locally.
-- [ ] Swap the Phase 3 RAG backend from a paid API to local Ollama (embeddings + generation fully local).
+- [ ] Swap the Phase 5 RAG backend from a paid API to local Ollama (embeddings + generation fully local).
 
 ---
 
-## Phase 5 — Capstone Project
+## Phase 7 — Multi-Agent Systems
 *(1–2 weeks)*
 
-Combine everything: **local model + RAG, exposed as an MCP server**, plugged into Claude Code/Desktop.
+Single agents hit a ceiling on complex, multi-step work. Multi-agent systems split the work across specialized agents that plan, delegate, and review each other.
 
-Example: an MCP server exposing a `search_knowledge_base` Tool → backed by local RAG (Ollama + ChromaDB) over your own documents. A fully private/offline assistant accessible from inside Claude Code.
+**Reading**
+- [ ] [LangGraph docs](https://langchain-ai.github.io/langgraph/) — graph-based orchestration, most control, steepest learning curve
+- [ ] [CrewAI docs](https://docs.crewai.com) — role-based crews (Agent/Task/Crew), easiest to start with
+- [ ] [Microsoft AutoGen](https://github.com/microsoft/autogen) — conversational, agent-vs-agent design
+- [ ] [Claude Code — Agent Teams](https://code.claude.com/docs/en/agent-teams) — built-in multi-agent orchestration, a natural extension of the subagents you already use
+
+**POC**
+- [ ] Build a small research crew (CrewAI or LangGraph): one agent researches, one writes, one reviews.
+- [ ] Try Claude Code's native Agent Teams feature on a real task and compare it to your existing subagent setup.
+
+---
+
+## Phase 8 — Agent Evaluation & Benchmarks
+*(1 week)*
+
+Building an agent is easy; knowing whether it's actually good is not. This phase is about measuring behavior, not just shipping it.
+
+**Reading**
+- [ ] [Anthropic Engineering — Demystifying evals for AI agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents) — how to structure evals for multi-turn, tool-using agents
+- [ ] [SWE-bench](https://www.swebench.com) — real-world coding-agent benchmark (GitHub issues → verified patches)
+- [ ] [GAIA benchmark](https://huggingface.co/datasets/gaia-benchmark/GAIA) — general-assistant tasks requiring tools, browsing, multi-step reasoning
+- [ ] [tau-bench](https://github.com/sierra-research/tau-bench) — tool-agent-user benchmark, tests policy adherence in realistic conversations
+
+**POC**
+- [ ] Write a small private eval (10–20 tasks) for one of your own agents/POCs from earlier phases: define inputs, expected outcomes, and a grading function.
+- [ ] Run that eval against two different models or two different prompt/tool configurations and compare pass rates.
+
+---
+
+## Phase 9 — Capstone Project
+*(1–2 weeks)*
+
+Combine everything: **local model + RAG + multi-agent orchestration, exposed as an MCP server**, plugged into Claude Code/Desktop, with a basic eval suite to check it's actually working.
+
+Example: an MCP server exposing a `search_knowledge_base` Tool → backed by local RAG (Ollama + ChromaDB) over your own documents, orchestrated by a small agent team (research → answer → review), routed through a local AI gateway, with a handful of eval cases guarding against regressions. A fully private/offline assistant accessible from inside Claude Code.
 
 ---
 
 ## Priority Order (Short on Time)
 
-`MCP (Phase 2)` → `RAG (Phase 3)` → `Local (Phase 4)` → `Integration (Phase 5)`
+`MCP (Phase 3)` → `RAG (Phase 5)` → `Local (Phase 6)` → `Multi-Agent (Phase 7)` → `Integration (Phase 9)`
 
-Fundamentals (Phase 0) can run in parallel, in spare time.
+Fundamentals (Phase 0), Gateways/Bedrock (Phase 2), Claude Skills/Commands/Rules (Phase 4), and Evaluation (Phase 8) can run in parallel, in spare time.
 
 ## License
 
