@@ -7,6 +7,7 @@
 A minimal server built with the official Python `mcp` SDK (`FastMCP`):
 
 - **Tool** `get_weather(city)` — calls the free [Open-Meteo](https://open-meteo.com) API (no key required) for a small set of known cities.
+- **Tool** `check_surf_conditions(spot, date)` — calls the free [Open-Meteo Marine](https://open-meteo.com) API for a small set of known surf spots, and returns a verdict based on wave height/period, chop, and sea temp.
 - **Resource** `notes://study` — serves `NOTES.md` back to the model.
 
 Files:
@@ -45,8 +46,8 @@ mcp install server.py
 ```bash
 claude mcp add study-mcp-poc -- python /absolute/path/to/pocs/02-mcp/server.py
 ```
-Then in a Claude Code session, the `get_weather` tool and `notes://study` resource
-should show up in `/mcp`.
+Then in a Claude Code session, the `get_weather`/`check_surf_conditions` tools and
+`notes://study` resource should show up in `/mcp`.
 
 ## POC checklist
 
